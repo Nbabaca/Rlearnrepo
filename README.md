@@ -1,2 +1,2 @@
 # Rlearnrepo
-im desperate to learn R
+im desperate to learn R because im gay!
