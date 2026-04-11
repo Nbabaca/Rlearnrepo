@@ -10,9 +10,9 @@ dados <- as.data.frame(dados)
 head(dados)
 
 #jeito rapido de trazer tabelas
-datas<- read.table("clipboard", header = TRUE, sep = "\t")
-head(datas)
-summary(datas)
+dados<- read.table("clipboard", header = TRUE, sep = "\t")
+head(dados)
+summary(dados)
 
 # como ver a "Moda" dos seus dados
 hist(dados[,5])
@@ -36,12 +36,18 @@ sort(sorted)[73]
 (sort(sorted)[72]+sort(sorted)[73])/2 #metodo para caso o vetor seja par
 38%%2 #modulo de par
 39%%2 #modulo de impar
-med <- function(x) {odd.even <- length(x)%%2 if,odd==en==0)(sort(x)[length(x)/2] + sort(x)[1+length(x)/2])/2 else sort(x)[ceiling(length(x)/
-#incompleto
-  
-
+med <- function(x) {
+  modulo <- length(x)%%2
+  if (modulo==0) (sort(x)[ceiling(length(x)/2)] + sort(x)[ceiling(1+length(x)/2)])/2
+  else sort(x)[ceiling(length(x)/2)]
+} # Como criar uma função que calcular mediana independente de ser par ou impar
+ med(y)                                                             
+ median(y) # Comando que ja esta no R para calcular mediana dos seus dados                                            
 #Media Geometrica como calcular
+ insetos <- c(1,10,1000,10,1)
  100000^0.2 #metodo de calcular raiz de numeros ("^" simbolo de raiz)
+ mean(insetos) # a media aritimetica não consegue achar uma tendencia central quando,o outlier é muito grande.
+ exp(mean(log(insetos))) #outro metodo de calcular media geometrica
  
  
                                                                                                                                   
