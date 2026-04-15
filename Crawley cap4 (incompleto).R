@@ -24,21 +24,40 @@ gardenA-mean(gardenA)
 (gardenA-mean(gardenA))^2
 sum((gardenA-mean(gardenA))^2)
 sum((gardenA-mean(gardenA))^2)/9 #variancia de A
+s2A <- sum((gardenA-mean(gardenA))^2)
 
 mean(gardenB)
 gardenB-mean(gardenB)
 (gardenB-mean(gardenB))^2
 sum((gardenB-mean(gardenB))^2)
 sum((gardenB-mean(gardenB))^2)/9 #variancia de B
+s2B <- sum((gardenB-mean(gardenB))^2)
 
 mean(gardenC)
 gardenC-mean(gardenC)
 (gardenC-mean(gardenC))^2
 sum((gardenC-mean(gardenC))^2)
 sum((gardenC-mean(gardenC))^2)/9 #variancia de C
+s2C <- sum((gardenC-mean(gardenC))^2)
 
 var(gardenC)/var(gardenB) #F-test para saber se as variancias são significamentes diferentes
 2*(1-pf(10.66667,9,9)) #metodo de ver a significancia do F-test
 var.test(gardenB,gardenC) #função integrada ao R do F-test
 #LIÇÃO! QUANDO AS VARIANCIAS FOREM DIFERENTES, NÃO COMPARE AS MEDIAS!!!
-    
+
+#Variance and Sample Size
+plot(c(0,32),c(0,15),type="n",xlab = "Sample Size",ylab = "Variance")
+for (df in seq(3,31,2)) {
+  for(i in 1:30){
+    x<- rnorm(df,mean = 10,sd=2)
+    points(df,var(x)) }}
+#O plot que é montado indica a relação entre a variancia e o tamanho da amostra e essa relação mostra que quanto menor o tamanho da amostra maior sera a variancia
+
+#Using Variance
+#Two main ways: for estaabilishing, measures of unreliability/ for testing hypothesis
+ sqrt(var(gardenA)/10) #erro padrão do canteiro A
+ sqrt(var(gardenB)/10) #erro padrão do canteiro B
+ sqrt(var(gardenC)/10) #erro padrão do canteiro C
+ 
+ #Confidence intervals
+ 
