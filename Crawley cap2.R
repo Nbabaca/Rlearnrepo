@@ -35,3 +35,4 @@ head(dados1)
 x <- Experience..Years.
 y <- Age
 plot(x,y,pch=21,bg="red")
+
