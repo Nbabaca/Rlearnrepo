@@ -29,10 +29,19 @@ visitas[50] #ver o valor que se encontra nessa parte do dataframe
 table(observador) #utilizado para verificar erros nos fatores das variaveis categoricas
 
 #Relationships
-dados1 <- Pokemon
-attach(dados1)
-head(dados1)
-x <- Experience..Years.
-y <- Age
-plot(x,y,pch=21,bg="red")
 
+attach(Wasps)
+head(Wasps)
+x <- exploration_rate
+y <- Explored.areas
+z <- total_distance
+plot(y,x,pch=21,bg="orange") #"pch" significa "plotting character" e muda o simbolo do plot, "bg" muda a cor do simbolo
+plot(factor(colonia),Explored.areas) # Quando fazemos um plot com uma variavel categorica quantitativa e uma continua o R produz um boxplot
+
+#Looking for interactions Between Continuos Variables
+windows(7,4)
+par(mfrow=c(1,2))
+plot(y,z)
+plot(y,x)
+windows(7,7)
+coplot(y~x|z,pch = 16, panel = panel.smooth)
