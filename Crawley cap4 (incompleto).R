@@ -60,5 +60,22 @@ for (df in seq(3,31,2)) {
  sqrt(var(gardenC)/10) #erro padrão do canteiro C
  
  #Confidence intervals
+<<<<<<< HEAD
  
  
+=======
+ qt(.025,9) # codigo para calcular valores de "student's T test"
+qt(.975,9) 
+#Values of Student’s t are numbers of standard errors to be expected with specified probability and for a given number of degrees of freedom.
+qt(.995,9)
+qt(.9975,9)
+qt(.975,9)*sqrt(1.33333/10) #Calculo do intervalo de confiança para o "gardenB"
+#and we would present the result in written work like this: ‘The mean ozone concentration in garden B was 5.0± 0.826 (95% CI, n= 10).’
+
+#Bootstrap
+Wasps <- read.table("clipboard", header = TRUE, sep = "\t")
+head(Wasps)
+attach(Wasps)
+names(Wasps)
+
+>>>>>>> 28f66012b4287956d69150d81db88fba6c5ee8c3
