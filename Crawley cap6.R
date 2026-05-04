@@ -32,3 +32,42 @@ s2b <- var(gardenB)
 2*pt(-3.872983,18) #Valor de P das medias serem iguais
 t.test(gardenA,gardenB) #Codigo do R que equivale ao teste T
 
+#Wilcoxon Rank sum Test
+ozone #esse metodo é utilizado quando o erro padrão não segue uma normal
+label <- c(rep("A",10),rep("B",10))
+label
+combined.ranks <- rank(ozone)
+combined.ranks
+tapply(combined.ranks,label,sum) #apos ranquear os valores é calculado a soma dos valores ranqueados para cada garden e comparamos o menor valor com uma tabela (GardenA) que deu 66 e para sample size 10 é um valor significativo
+wilcox.test(gardenA,gardenB)  #Codigo para fazer automaticamente 
+#O teste de wilcox é mais conservador que o test T
+
+#test on paired samples
+attach(streams)
+names(streams) #esse set de dados é pareado pois os dados foram retirados da mesma queda de esgoto
+t.test(down,up) #pelo set de dados ser pareado, o teste T vê ele como não significativo
+t.test(down,up,paired=T) #logo é necessario especificar que os valores são pareados, mudando assim o valor de P
+d <- up-down
+t.test(d) #Ao fazer o teste t com uma amostra reduzimos os Df e obtivemos o mesmo valor de P assim diminuindo a variancia do erro
+
+#The Sign test
+ binom.test(1,9)
+ 
+sign.test <- function(x,y)
+{
+  if(length(x)!=length(y))stop("The two variables must be the same length")
+  d <- x-y
+  binom.test(sum(d > 0),length(d))
+} #Função que calcula o sign test
+sign.test(gardenA,gardenB) #quando duas coisas são iguais o teste parametrico é mais forte que o não parametrico
+
+#Binomal Test to Compare Two Proportions 
+prop.test(c(4,196),c(40,3270)) ##teste para identificar significancia entre duas proporções, nesse caso para ver se ha discriminação positiva entre duas proporções, nesse caso não houve significancia
+
+#Chi-square Contingency Tables
+qchisq(0.95,1) #Codigo para determinar o valor critico do qui quadrado, o primeiro valor sendo o quantil e o segundo o Df
+count <- matrix(c(38,14,11,51),nrow=2) #forma de criar uma matrix 
+count
+chisq.test(count)  #com a correção de Yates
+chisq.test(count,correct = F) #sem a correção de yates, e mesmo assim os dois valores mostram alta significancia entre os olhos e a cor do cabelo, assim discartando a hipotese nula
+
