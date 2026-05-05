@@ -16,7 +16,7 @@ F.ratio #nesse caso como passou do valor critico, foi descartada e as variancias
 var.test(gardenB,gardenC) #Teste que compara as variancias
 
 #Comparing Two Means
-#existem dois testes para comparar as medias de dua amostras independentes
+#existem dois testes para comparar as medias de duas amostras independentes
 
 #Student's T test 
 qt(0.975,18) #Valor critico para determinar se as medias são significamente diferentes no valor p=0.05
@@ -71,3 +71,47 @@ count
 chisq.test(count)  #com a correção de Yates
 chisq.test(count,correct = F) #sem a correção de yates, e mesmo assim os dois valores mostram alta significancia entre os olhos e a cor do cabelo, assim discartando a hipotese nula
 
+#Fischer's Exact Test
+#É utilizado quando um dos valores da tabela de contingencia é menor que 5
+factorial <- function(x)max(cumprod(1:x)) #função para calcular factoriais
+x <- as.matrix(c(6,4,2,8))
+dim(x) <- c(2,2) #forma alternativa de montar uma matrix
+x
+fisher.test(x) #codigo para o teste de fisher
+attach(fisher) #é possivel fazer esse teste com mais matrizes maiores que 2x2
+fisher.test(tree,nests)
+
+#Correlation and Covariance
+#Covariação é a expectativa do produtor do vetor
+data <- read.csv("Dados crawley/twosample.csv")
+attach(data)
+plot(x,y)
+var(x)
+var(y)
+var(x,y) #covariancia de x e y
+var(x,y)/sqrt(var(x)*var(y)) #forma de calcular coeficiente de correlação
+cor(x,y) #O coeficiente de correlação é a covariancia dividida pela media geometrica das dua variancias
+
+#Correlation and the Variance of Differences Between Variables
+ paired <- read.csv("Dados crawley/water.table.csv")
+attach(paired)
+names(paired) 
+cor(Summer,Winter) #cor é o codigo para avaliar a correlação entre dois vetores
+cor.test(Summer, Winter) #teste para avaliar a significancia da correlação entre dois vetores
+Vars = var(Summer)
+varw = var(Winter)
+vard = var(Summer-Winter)
+(Vars + varw - vard)/(2*sqrt(Vars)*sqrt(varw)) #esse calculo comprova a correlação entre os dois vetores
+Vars + varw -2*0.8820102*sqrt(Vars)*sqrt(varw) # calculo para a diferença das variancias
+
+#Scale dependent Correlations
+# Graficos podem ser enganosos, não confie em tudo que o grafico mostra
+par(mfrow=c(1,1))
+rm(x,y)
+produtividade <- read.csv("Dados crawley/productivity.csv")
+View(produtividade)
+attach(produtividade)
+names(produtividade)
+plot(productivity,mammals,pch=16,col="blue") #o grafico mostra que a riqueza de especies aumenta conforme a produtividade
+cor.test(productivity,mammals,method = "spearman")
+plot(productivity,mammals)
