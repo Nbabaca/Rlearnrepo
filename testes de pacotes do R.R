@@ -16,10 +16,11 @@ library(viridis)
 #___________________________________________
 #ggplot2 testes (o basico)
 #___________________________________________
-data <- read.csv("dados amanda/modelo.csv")
+data <- read.csv("dados amanda/NOTAS EVOLUÇÃO 2026.1.csv")
+dados <- read.csv("dados amanda/NOTAS EVOLUÇÃO 2026.1Q.csv")
 head(data)
 attach(data)
-ggplot(data, aes(x = ambiente, y = Explored.areas))+
+ggplot(data, aes(x = Individuo, y = Total))+
   geom_boxplot(
     
     # custom boxes
@@ -38,7 +39,7 @@ ggplot(data, aes(x = ambiente, y = Explored.areas))+
 #____________________________________________________
 #Como mudar fazer separação de cor de outra variavel
 #____________________________________________________
-ggplot(data,aes(x = coleta, y = exploration_rate, fill = tratamento))+
+ggplot(data,aes(x = Matricula, y = , fill = tratamento))+
   geom_boxplot(alpha=0.5)+
   theme(legend.position="none") 
 
@@ -66,14 +67,14 @@ p2 <- ggplot(data, aes(x=coleta, y=Explored.areas, fill = tratamento))+
 #___________________________________________________
 #Boxplot com pontos de dados individuais
 #___________________________________________________
-ggplot(data, aes(x=coleta, y=Explored.areas, fill = tratamento))+
-  geom_boxplot()+
-  scale_fill_viridis(discrete = T,alpha = 0.6)
-  geom_jitter(color="black",size=0.8, alpha=0.9)+ #adiciona pontos
-  theme_ipsum()+
+ggplot(data, aes(x=Individuo, y=Total))+
+  geom_boxplot(color="cyan",fill="cyan",alpha=0.5)+
+  scale_fill_viridis(discrete = T,alpha = 0.6)+
+  geom_jitter(color="black",size=2.0, alpha=0.9)+ #adiciona pontos
+  theme_dark()+
     theme(legend.position = "none",plot.title = element_text(size=12))+
   ggtitle("Um boxplot com pontos")+ #Como colocar titulo
-  xlab("coleta")
+  xlab("alunos")
 
 #__________________________________________________
 #Reorganizando variaveis com o ggplot
@@ -87,6 +88,32 @@ data %>%
            theme(legend.position = "none",plot.title = element_text(size=12))+
            ggtitle("Um boxplot organizado por media")+
            xlab("")
+
+
+#______________________________________________________
+#Dados Evolução
+#______________________________________________________
+par(mfrow=c(1,1))
+ggplot(data, aes(x=Individuo, y=Total,ymax=10,ymin=0))+
+  geom_boxplot(color="black",fill="cyan",alpha=0.3)+
+  scale_fill_viridis(discrete = T)+
+  geom_jitter(color="black",size=2.0, alpha=0.9)+ #adiciona pontos
+  theme_minimal()+
+  theme(legend.position = "none",plot.title = element_text(size=12))+
+  ggtitle("Um boxplot com pontos")+ #Como colocar titulo
+  xlab("alunos")+
+  ylab("Notas")
+
+ggplot(dados, aes(x=Questao, y=Nota,fill = Questao))+
+  geom_boxplot(alpha=0.3,varwidth = T)+
+  scale_fill_viridis(discrete = T,alpha = 0.6)+
+  geom_jitter(color="black",size=1.5,alpha=0.9)+ #adiciona pontos
+  theme_minimal()+
+  theme(legend.position = "none",plot.title = element_text(size=12))+
+  ggtitle("Boxplot das pontuações das questões da prova de evolução")+ #Como colocar titulo
+  xlab("Questões")+
+  ylab("pontuação")+
+  scale_fill_brewer(palette = "YlOrBr")
 
 
 
