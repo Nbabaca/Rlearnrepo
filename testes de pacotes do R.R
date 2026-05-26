@@ -105,7 +105,7 @@ ggplot(data, aes(x=Individuo, y=Total,ymax=10,ymin=0))+
   ylab("Notas")
 
 ggplot(dados, aes(x=Questao, y=Nota,fill = Questao))+
-  geom_boxplot(alpha=0.3,varwidth = T)+
+  geom_(alpha=0.8,varwidth = T)+
   scale_fill_viridis(discrete = T,alpha = 0.6)+
   geom_jitter(color="black",size=1.5,alpha=0.9)+ #adiciona pontos
   theme_minimal()+
