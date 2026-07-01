@@ -18,8 +18,12 @@ library(viridis)
 #___________________________________________
 data <- read.csv("dados amanda/NOTAS EVOLUÇÃO 2026.1.csv")
 dados <- read.csv("dados amanda/NOTAS EVOLUÇÃO 2026.1Q.csv")
-head(data)
-attach(data)
+head(dados)
+attach(dados)
+dados_arrange <- dados %>%
+  dplyr::arrange(Nota)
+head(dados_arrange)  
+
 ggplot(data, aes(x = Individuo, y = Total))+
   geom_boxplot(
     
@@ -105,7 +109,7 @@ ggplot(data, aes(x=Individuo, y=Total,ymax=10,ymin=0))+
   ylab("Notas")
 
 ggplot(dados, aes(x=Questao, y=Nota,fill = Questao))+
-  geom_(alpha=0.8,varwidth = T)+
+  geom_boxplot(alpha=0.8,varwidth = T)+
   scale_fill_viridis(discrete = T,alpha = 0.6)+
   geom_jitter(color="black",size=1.5,alpha=0.9)+ #adiciona pontos
   theme_minimal()+
