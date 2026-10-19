@@ -12,6 +12,7 @@ library(tidyverse)
 library(carData)
 library(viridis)
 library(glmmTMB)
+library(DHARMa)
 #___________________________________________
 #Dados 
 #___________________________________________
@@ -45,11 +46,12 @@ ggplot(dados, aes(x= Dist.Min.Olhos, fill= Ambiente))+
 
 
 #___________________________________________
-#Boxplot das Medidas
+#Boxplot das Medidas por Local
 #___________________________________________
 
 ggplot(dados, aes(x=Local, y=Dist.Intertegula))+
-  geom_boxplot()
+  geom_boxplot()+
+  geom_jitter()
 
 ggplot(dados, aes(x=Local, y=Larg.Clipeo))+
   geom_boxplot()
@@ -65,14 +67,18 @@ ggplot(dados, aes(x=Local, y=Dist.Min.Olhos))+
 #___________________________________________
 cor(dados[,5:8])
 
+#Dist.Intertegula por ambiente
 glmmTMB(data=dados,Dist.Intertegula~Ambiente+(1|Local/Colonia)) -> Mix1
 summary(Mix1)
+Mix1->m1
+plot(simulateResiduals(m1))
+table(dados$Local)
 
-view(dados)
-summary(dados)
 
-table(dados$Ambiente)
-
+#Dist.Intertegula por local de coleta
+glmmTMB(data=dados,Dist.Intertegula~Local+(1|Ambiente/Colonia)) ->m2
+summary(m2)
+  plot(simulateResiduals(m2))
 
 #__________________________________________
 #Agrupar dados
@@ -93,8 +99,9 @@ attach(dados_resumidos)
 hist(Dist.Intertegula)
 shapiro.test(Dist.Intertegula)
 
- modelo1 <- aov(Dist.Intertegula ~ Ambiente)
+ modelo1 <- aov(Dist.Intertegula ~ Local)
 summary(modelo1)
+plot(modelo1)
 
 modelo <- aov(media ~ Ambiente)
 summary(modelo)
