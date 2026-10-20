@@ -13,11 +13,12 @@ library(carData)
 library(viridis)
 library(glmmTMB)
 library(DHARMa)
+library(gridExtra)
 #___________________________________________
 #Dados 
 #___________________________________________
 
-dados <- read.csv2("C:/Users/Evolab/Desktop/Gabriel Farias/medidas vespas amanda.csv")
+dados <- read.csv("IC/medidas vespas amanda - medidas vespas amanda.csv.csv")
 # Ou especifica nomes de colunas específicos:da
 dados <- dados %>%
   mutate(across(c(Dist.Intertegula, Larg.Clipeo, Tam.Cabeca, Dist.Min.Olhos), as.numeric))
@@ -30,19 +31,70 @@ par(mfrow=c(2,2))
 #Densidade das medidas
 #___________________________________________
 
-ggplot(dados, aes(x= Dist.Intertegula, fill= Ambiente))+
+p1 <- ggplot(dados, aes(x= Dist.Intertegula, fill= Ambiente))+
   geom_density(alpha=0.6)
 
-ggplot(dados, aes(x= Larg.Clipeo, fill= Ambiente))+
-  geom_density(alpha=0.6)
-
-
-ggplot(dados, aes(x= Tam.Cabeca, fill= Ambiente))+
+p2 <- ggplot(dados, aes(x= Larg.Clipeo, fill= Ambiente))+
   geom_density(alpha=0.6)
 
 
-ggplot(dados, aes(x= Dist.Min.Olhos, fill= Ambiente))+
+p3 <-ggplot(dados, aes(x= Tam.Cabeca, fill= Ambiente))+
   geom_density(alpha=0.6)
+
+
+p4 <- ggplot(dados, aes(x= Dist.Min.Olhos, fill= Ambiente))+
+  geom_density(alpha=0.6)
+
+grid.arrange(p1,p2,p3,p4,nrow=2)
+
+#___________________________________________
+#Densidade celulas, pupas e larvas
+#___________________________________________
+
+p5 <- ggplot(dados, aes(x= celulas, fill= Ambiente))+
+  geom_density(alpha=0.6)
+
+p6 <- ggplot(dados, aes(x= pupas, fill= Ambiente))+
+  geom_density(alpha=0.6)
+
+
+p7 <-ggplot(dados, aes(x= larvas, y= Ambiente))+
+  geom_density(alpha=0.6)
+
+p8 <- ggplot(dados, aes(x= celulas, y= Local))+
+  geom_boxplot(alpha=0.6)+
+  geom_jitter()
+
+p9 <- ggplot(dados, aes(x= pupas, y= Local))+
+  geom_boxplot(alpha=0.6)+
+  geom_jitter()
+
+
+p10 <-ggplot(dados, aes(x= larvas, y= Local))+
+  geom_boxplot(alpha=0.6)+
+  geom_jitter()
+
+p11 <- ggplot(dados, aes(x=Local,y=pupas,))+
+  geom_bar(stat = "identity")
+
+p12 <- ggplot(dados, aes(x=Local,y=celulas,))+
+  geom_bar(stat = "identity")
+
+p13 <- ggplot(dados, aes(x=Local,y=larvas,))+
+  geom_bar(stat = "identity")
+
+grid.arrange(p11,p12,p13,nrow=2)
+
+grid.arrange(p8,p9,p10,nrow=2)
+
+grid.arrange(p5,p6,p7,nrow=2)
+
+
+
+
+
+
+
 
 
 #___________________________________________
@@ -66,9 +118,10 @@ ggplot(dados, aes(x=Local, y=Dist.Min.Olhos))+
 #Correlação e GLMM
 #___________________________________________
 cor(dados[,5:8])
+table(dados$Ambiente)
 
 #Dist.Intertegula por ambiente
-glmmTMB(data=dados,Dist.Intertegula~Ambiente+(1|Local/Colonia)) -> Mix1
+glmmTMB(data=dados,Dist.Intertegula~Ambiente+(1|Local/Coleta)) -> Mix1
 summary(Mix1)
 Mix1->m1
 plot(simulateResiduals(m1))
