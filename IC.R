@@ -14,6 +14,7 @@ library(viridis)
 library(glmmTMB)
 library(DHARMa)
 library(gridExtra)
+library(MuMIn)
 #___________________________________________
 #Dados 
 #___________________________________________
@@ -74,14 +75,17 @@ p10 <-ggplot(dados, aes(x= larvas, y= Local))+
   geom_boxplot(alpha=0.6)+
   geom_jitter()
 
-p11 <- ggplot(dados, aes(x=Local,y=pupas,))+
-  geom_bar(stat = "identity")
+p11 <- ggplot(dados, aes(x=Colonia,y=pupas,))+
+  geom_bar(stat = "identity")+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 
-p12 <- ggplot(dados, aes(x=Local,y=celulas,))+
-  geom_bar(stat = "identity")
+p12 <- ggplot(dados, aes(x=Colonia,y=celulas,))+
+  geom_bar(stat = "identity")+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 
-p13 <- ggplot(dados, aes(x=Local,y=larvas,))+
-  geom_bar(stat = "identity")
+p13 <- ggplot(dados, aes(x=Colonia,y=larvas,))+
+  geom_bar(stat = "identity")+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
 
 grid.arrange(p11,p12,p13,nrow=2)
 
@@ -90,7 +94,7 @@ grid.arrange(p8,p9,p10,nrow=2)
 grid.arrange(p5,p6,p7,nrow=2)
 
 
-
+table(dados$pupas)
 
 
 
@@ -119,30 +123,118 @@ ggplot(dados, aes(x=Local, y=Dist.Min.Olhos))+
 #___________________________________________
 cor(dados[,5:8])
 table(dados$Ambiente)
-
-#Dist.Intertegula por ambiente
-glmmTMB(data=dados,Dist.Intertegula~Ambiente+(1|Local/Coleta)) -> Mix1
+table(dados$Local,dados$Coleta)
+dados$Coleta
+#Dist.Intertegula por ambiente e larvas 
+glmmTMB(data=dados,Dist.Intertegula~Ambiente*larvas+Coleta+(1|Local)) -> Mix1
 summary(Mix1)
-Mix1->m1
-plot(simulateResiduals(m1))
+plot(simulateResiduals(Mix1))
 table(dados$Local)
+options(na.action = na.fail)
+dredge(Mix1)->dmix1
+dmix1
+
+##Dist.Intertegula por ambiente e pupas
+glmmTMB(data=dados,Dist.Intertegula~Ambiente*pupas+Coleta+celulas+(1|Local))-> mix2
+summary(mix2)
+dredge(mix2)->dmix2
+dmix2
+model.avg(dmix2,subset=delta<4)->avgmix2
+summary(avgmix2)
+
+glmmTMB(data=dados[dados$Ambiente=="Urbano",],Dist.Intertegula~pupas+(1|Local/Coleta))-> mix3
 
 
-#Dist.Intertegula por local de coleta
-glmmTMB(data=dados,Dist.Intertegula~Local+(1|Ambiente/Colonia)) ->m2
+head(dados)
+summary(mix3)
+
+
+
+
+gglot(dados, aes(y=Dist.Intertegula,x=pupas,colour=Ambiente))+
+  geom_jitter()
+
+ggplot(dados, aes(y=pupas,x=Coleta,colour=Ambiente))+
+  geom_jitter()
+
+ggplot(dados, aes(y=pupas,x=celulas,colour=Ambiente))+
+  geom_jitter()
+
+ #Dist.Intertegula por local de coleta
+glmmTMB(data=dados,Dist.Intertegula~Local*pupas+Coleta+celulas) ->m2
 summary(m2)
   plot(simulateResiduals(m2))
+  
+glmmTMB(data=dados,Dist.Intertegula~Local*+Coleta+celulas) ->m3
+  summary(m3) 
+  
+  
+  
+   p20 <- ggplot(dados, aes(y=Dist.Intertegula,x=pupas,colour=Local))+
+    geom_jitter()
+  
+  p21<- ggplot(dados, aes(y=pupas,x=Coleta,colour=Local))+
+    geom_jitter()
+  
+  p22 <- ggplot(dados, aes(y=pupas,x=celulas,colour=Local))+
+    geom_jitter()
+  
+  grid.arrange(p20,p21,p22,nrow=2)
+  
 
 #__________________________________________
 #Agrupar dados
 #___________________________________________
 dados_resumidos=dados%>%
-  group_by(Colonia,Ambiente)%>%
+  group_by(Colonia)%>%
   summarise(n=n(),
-            media=mean(Dist.Intertegula),
+            Pupas=mean(pupas),
+            Celulas=mean(celulas),
+            Larvas=mean(larvas),
+            coleta=mean(Coleta))
+
+p14 <- ggplot(dados_resumidos, aes(x=Colonia,y=Pupas,fill = coleta))+
+  geom_bar(stat = "identity")+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))+
+  scale_fill_viridis(option = "turbo")
+
+p15 <- ggplot(dados_resumidos, aes(x=Colonia,y=Celulas,fill = coleta))+
+  geom_bar(stat = "identity")+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))+
+  scale_fill_viridis(option = "turbo")
+
+p16 <- ggplot(dados_resumidos, aes(x=Colonia,y=Larvas,fill = coleta))+
+  geom_bar(stat = "identity")+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))+
+  scale_fill_viridis(option = "turbo")
+
+grid.arrange(p14,p15,p16,nrow=2)
+
+
+p17 <- ggplot(dados_resumidos, aes(x=coleta,y=Pupas,fill = coleta))+
+  geom_bar(stat = "identity")+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))+
+  scale_fill_viridis(option = "magma")
+
+p18 <- ggplot(dados_resumidos, aes(x=coleta,y=Celulas,fill = coleta))+
+  geom_bar(stat = "identity")+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))+
+  scale_fill_viridis(option = "magma")
+
+p19 <- ggplot(dados_resumidos, aes(x=coleta,y=Larvas,fill = coleta))+
+  geom_bar(stat = "identity")+
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))+
+  scale_fill_viridis(option = "magma")
+
+grid.arrange(p17,p18,p19,nrow=2)
+
+
+
+
+cor(dados_resumidos[,3:6])
+
+head(dados_resumidos)            
             
-            Desvio_padrao=sd(Dist.Intertegula,na.rm = T),
-            Erro_padrao=Desvio_padrao/sqrt(n))
 View(dados_resumidos)
 attach(dados_resumidos)
 
