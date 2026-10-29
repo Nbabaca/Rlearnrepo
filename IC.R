@@ -2,9 +2,12 @@
 #Trabalho IC (Corpo das vespas)
 # GFP
 #___________________________________________
+install.packages(c("tidyverse","carData","viridis","glmmTMB","DHARMa","gridExtra","MuMIn"))
+install.packages("tidyverse")
 
-
-#___________________________________________
+install.packages(c("textshaping", "ragg"), lib = Sys.getenv("R_LIBS_USER"))
+install.packages("tidyverse")
+# ___________________________________________
 #Colocando os pacotes no R
 #___________________________________________
 library(dplyr)
@@ -15,6 +18,9 @@ library(glmmTMB)
 library(DHARMa)
 library(gridExtra)
 library(MuMIn)
+library(readr)
+library(tidyr)
+library(ggplot2)
 #___________________________________________
 #Dados 
 #___________________________________________
@@ -96,11 +102,6 @@ grid.arrange(p5,p6,p7,nrow=2)
 
 table(dados$pupas)
 
-
-
-
-
-
 #___________________________________________
 #Boxplot das Medidas por Local
 #___________________________________________
@@ -147,9 +148,6 @@ glmmTMB(data=dados[dados$Ambiente=="Urbano",],Dist.Intertegula~pupas+(1|Local/Co
 
 head(dados)
 summary(mix3)
-
-
-
 
 gglot(dados, aes(y=Dist.Intertegula,x=pupas,colour=Ambiente))+
   geom_jitter()
