@@ -26,14 +26,14 @@ p26 <-ggplot(data[1:40,], aes(x=aluno, y = resposta , colour = modalidade))+
   geom_bar(stat = "identity", fill= "salmon")+
   facet_wrap(~pergunta)+
   theme_bw()+
-  ggtitle("Gráfico de barras das respostas dos alunos por pergunta(Afinidade)")
+  ggtitle("A")
 
 
 p27 <-ggplot(data[41:80,], aes(x=aluno, y = resposta ,colour =  modalidade))+
   geom_bar(stat = "identity",fill = "lightblue")+
   facet_wrap(~pergunta)+
   theme_bw()+
-  ggtitle("Gráfico de barras das respostas dos alunos por pergunta(Dificuldade)")
+  ggtitle("B")
 
 p25
   

@@ -21,11 +21,12 @@ library(MuMIn)
 library(readr)
 library(tidyr)
 library(ggplot2)
+library(ggpubr)
 #___________________________________________
 #Dados 
 #___________________________________________
 
-dados <- read.csv("IC/medidas vespas amanda - medidas vespas amanda.csv.csv")
+dados <- read.csv("IC/medidas vespas amanda - medidas vespas amanda.csv(1).csv")
 # Ou especifica nomes de colunas específicos:da
 dados <- dados %>%
   mutate(across(c(Dist.Intertegula, Larg.Clipeo, Tam.Cabeca, Dist.Min.Olhos), as.numeric))
@@ -250,4 +251,39 @@ modelo <- aov(media ~ Ambiente)
 summary(modelo)
 
 
- 
+head(dados)
+
+
+
+#________________________________________
+#Eureka
+#________________________________________
+ggplot(dados, aes(x=Dias.Coleta.,y=Dist.Intertegula, colour = Ambiente))+
+  geom_smooth(method = lm,aes(linetype = Ambiente))+
+  geom_jitter()+
+  stat_regline_equation(aes(label = paste(after_stat(eq.label),
+                                          after_stat(rr.label),
+                                          sep = "~~~~")))+
+  facet_wrap(~Ambiente)
+
+ggplot(dados, aes(x=Dias.Coleta.,y=pupas, colour = Ambiente))+
+         geom_smooth(method = lm,aes(linetype = Ambiente))+
+         geom_jitter()+
+         stat_regline_equation(aes(label = paste(after_stat(eq.label),
+                                                 after_stat(rr.label),
+                                                 sep = "~~~~")))+
+  facet_wrap(~Ambiente)
+
+
+mix5 <- glmmTMB(data=dados,Dist.Intertegula~Ambiente*pupas+Dias.Coleta.+(1|))
+summary(mix5) 
+
+
+ggplot(dados, aes(x=Dias.Coleta.,y=Dist.Intertegula, colour = Ambiente,size = pupas))+
+         geom_jitter()+
+  facet_wrap(~Ambiente)
+
+ggplot(dados, aes(x=Dias.Coleta.,y=Dist.Intertegula, colour = Ambiente,size = pupas))+
+  geom_jitter()+
+  facet_wrap(~Lugar)
+
