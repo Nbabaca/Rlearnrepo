@@ -26,7 +26,7 @@ library(ggpubr)
 #Dados 
 #___________________________________________
 
-dados <- read.csv("IC/medidas vespas amanda - medidas vespas amanda.csv(1).csv")
+dados <- read.csv("IC/medidas vespas amanda - medidas vespas amanda.csv(2).csv")
 # Ou especifica nomes de colunas específicos:da
 dados <- dados %>%
   mutate(across(c(Dist.Intertegula, Larg.Clipeo, Tam.Cabeca, Dist.Min.Olhos), as.numeric))
@@ -169,13 +169,13 @@ glmmTMB(data=dados,Dist.Intertegula~Local*+Coleta+celulas) ->m3
   
   
   
-   p20 <- ggplot(dados, aes(y=Dist.Intertegula,x=pupas,colour=Local))+
+   p20 <- ggplot(dados, aes(y=Dist.Intertegula,x=pupas,colour=Ambiente))+
     geom_jitter()
   
-  p21<- ggplot(dados, aes(y=pupas,x=Coleta,colour=Local))+
+  p21<- ggplot(dados, aes(y=pupas,x=Coleta,colour=Ambiente))+
     geom_jitter()
   
-  p22 <- ggplot(dados, aes(y=pupas,x=celulas,colour=Local))+
+  p22 <- ggplot(dados, aes(y=pupas,x=celulas,colour=Ambiente))+
     geom_jitter()
   
   grid.arrange(p20,p21,p22,nrow=2)
@@ -274,16 +274,35 @@ ggplot(dados, aes(x=Dias.Coleta.,y=pupas, colour = Ambiente))+
                                                  sep = "~~~~")))+
   facet_wrap(~Ambiente)
 
+cor(dados[,c(5,9,11:14)])
 
-mix5 <- glmmTMB(data=dados,Dist.Intertegula~Ambiente*pupas+Dias.Coleta.+(1|))
+mix5 <- glmmTMB(data=dados,Dist.Intertegula~Ambiente*pupas+Dias.Coleta.+(1|Local))
 summary(mix5) 
+plot(simulateResiduals(mix5))
+dredge(mix5)->dmix5
+dmix5
+model.avg(dmix5,subset=delta<4)->avgmix5
+summary(avgmix5)
+#______________________________
+#Modelo 
+#______________________________
+mix6 <- glmmTMB(data=dados,Dist.Intertegula~Ambiente*(pupas+Dias.Coleta.+adultos)+(1|Colonia))
+summary(mix6)
+plot(simulateResiduals(mix6))
+dredge(mix6)->dmix6
+dmix6
+model.avg(dmix6,subset=delta<4)->avgmix6
+summary(avgmix6)
 
 
 ggplot(dados, aes(x=Dias.Coleta.,y=Dist.Intertegula, colour = Ambiente,size = pupas))+
          geom_jitter()+
   facet_wrap(~Ambiente)
 
-ggplot(dados, aes(x=Dias.Coleta.,y=Dist.Intertegula, colour = Ambiente,size = pupas))+
+ggplot(dados, aes(x=Dias.Coleta.,y=Dist.Intertegula, colour = Local,size = pupas))+
   geom_jitter()+
-  facet_wrap(~Lugar)
+  facet_wrap(~Local)
 
+ggplot(dados, aes(x=adultos,y=Dist.Intertegula, colour = Ambiente))+
+  geom_jitter()+
+  facet_wrap(~Ambiente)
